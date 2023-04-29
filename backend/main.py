@@ -31,5 +31,6 @@ def prediction(request: Request, file: bytes = File):
         file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
         frame = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
         label = read_img(frame)
+        print("hi")
         return label
     return "No post request found"
