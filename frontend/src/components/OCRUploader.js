@@ -5,19 +5,16 @@ const OCRUploader = () => {
   const [result, setResult] = useState(null);
 
   const handleFileChange = (e) => {
-    console.log("set file");
-    console.log(e.target.files[0]);
     setFile(e.target.files[0]);
   };
 
   const handlePost = async () => {
-    const url = "https://freeocrapi.com/api";
+    const url = "https://journal-scanner.herokuapp.com/";
     const data = new FormData();
     data.append("file", file);
 
     try {
       const response = await fetch(url, {
-        mode: "no-cors",
         method: "POST",
         body: data,
       });
