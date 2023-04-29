@@ -24,7 +24,7 @@ class ImageType(BaseModel):
 
 
 @app.post("/predict/")
-def prediction(request: Request, file: bytes = File):
+def prediction(request: Request, file: bytes = File(...)):
     if request.method == "POST":
         image_stream = io.BytesIO(file)
         image_stream.seek(0)
