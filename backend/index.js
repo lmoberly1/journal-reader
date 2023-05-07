@@ -37,24 +37,24 @@ app.get("/", (req, res) => {
 });
 
 app.post("/upload", upload.single("file"), (req, res) => {
-  try {
-    const optiic = new Optiic({
-      apiKey: process.env.OPTIIC_KEY,
+  const optiic = new Optiic({
+    apiKey: process.env.OPTIIC_KEY,
+  });
+  console.log("File ", req.file);
+  optiic
+    .process({
+      image: req.file.path,
+      // image: "uploads/test.jpeg",
+      // image: "https://optiic.dev/assets/images/samples/we-love-optiic.png",
+    })
+    .then((result) => {
+      console.log("Result", result);
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log("Error", err);
+      res.send(err);
     });
-    console.log("File ", req.file);
-    optiic
-      .process({
-        // image: req.file.path,
-        // image: "uploads/test.jpeg",
-        image: "https://optiic.dev/assets/images/samples/we-love-optiic.png",
-      })
-      .then((result) => console.log("Result", result))
-      .catch((err) => console.log(err));
-    res.send("Success");
-  } catch (error) {
-    console.log(error);
-    res.send("error");
-  }
 });
 
 app.listen(3001, () => {
