@@ -4,6 +4,7 @@ const express = require("express");
 var bodyParser = require("body-parser");
 const cors = require("cors");
 var multer = require("multer");
+var fs = require("fs");
 const rateLimit = require("express-rate-limit");
 require("dotenv").config();
 
@@ -12,14 +13,16 @@ const limiter = rateLimit({
   max: 25, // limit each IP to 100 requests per windowMs
 });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname.replace(/\s/g, ""));
-  },
-});
+const storage = multer.memoryStorage();
+
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "uploads/");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname.replace(/\s/g, ""));
+//   },
+// });
 const upload = multer({ storage: storage });
 const app = express();
 const corsOptions = {
@@ -41,20 +44,26 @@ app.post("/upload", upload.single("file"), (req, res) => {
     apiKey: process.env.OPTIIC_KEY,
   });
   console.log("File ", req.file);
-  optiic
-    .process({
-      image: req.file.path,
-      // image: "uploads/test.jpeg",
-      // image: "https://optiic.dev/assets/images/samples/we-love-optiic.png",
-    })
-    .then((result) => {
-      console.log("Result", result);
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log("Error", err);
-      res.send(err);
-    });
+  fs.writeFile(req.file.originalname, req.file.buffer, (err) => {
+    // Error
+    if (err) {
+      console.log("ERROR", err);
+    }
+    // Send to Optiic
+    console.log("File written successfully");
+    optiic
+      .process({
+        image: req.file.originalname,
+      })
+      .then((result) => {
+        console.log("OPTIIC RESULT", result);
+        res.status(200).send(result);
+      })
+      .catch((err) => {
+        console.log("OPTIIC ERROR", err);
+        res.status(400).send(err);
+      });
+  });
 });
 
 app.listen(3001, () => {
