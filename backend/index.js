@@ -45,7 +45,8 @@ app.post("/upload", upload.single("file"), (req, res) => {
     optiic
       .process({
         // image: req.file.path,
-        image: "uploads/test.jpeg",
+        // image: "uploads/test.jpeg",
+        image: "https://optiic.dev/assets/images/samples/we-love-optiic.png",
       })
       .then((result) => console.log("Result", result))
       .catch((err) => console.log(err));
