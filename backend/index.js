@@ -44,6 +44,7 @@ app.post("/upload", upload.single("file"), (req, res) => {
     apiKey: process.env.OPTIIC_KEY,
   });
   console.log("File ", req.file);
+
   fs.writeFile(req.file.originalname, req.file.buffer, (err) => {
     // Error
     if (err) {

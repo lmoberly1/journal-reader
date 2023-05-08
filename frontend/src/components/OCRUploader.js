@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const OCRUploader = () => {
   const [file, setFile] = useState(null);
@@ -9,19 +10,27 @@ const OCRUploader = () => {
   };
 
   const handlePost = async () => {
-    const url = "https://journal-scanner.herokuapp.com/";
     const data = new FormData();
     data.append("file", file);
 
+    for (var pair of data.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        body: data,
-      });
-      console.log(data);
+      const response = await axios.post(
+        "https://journal-backend-o6sb.onrender.com/upload",
+        // "http://localhost:3001/upload",
+        data,
+        {
+          accept: "application/json",
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      // await axios.post("http://localhost:3000/upload", {
+      //   file: data,
+      // });
       console.log("response", response);
-      const text = await response.text();
-      setResult(text);
     } catch (error) {
       console.error(error);
     }
